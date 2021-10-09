@@ -1,0 +1,184 @@
+basePath: /
+definitions:
+  custom.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  models.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+    required:
+    - email
+    - firstName
+    - lastName
+    type: object
+  models.GetUserResponse:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: string
+      lastName:
+        type: string
+    type: object
+  models.GetUsersResponse:
+    properties:
+      users:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+    type: object
+  models.User:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: string
+      lastName:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: Task Manager
+  version: "1.0"
+paths:
+  /v1/users:
+    get:
+      consumes:
+      - application/json
+      description: GetUsers
+      operationId: GetUsers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetUsersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+      summary: Get All Users
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: CreateUser
+      operationId: UserCreate
+      parameters:
+      - description: Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+      summary: Create User
+      tags:
+      - Users
+  /v1/users/{userId}:
+    delete:
+      consumes:
+      - application/json
+      description: DeleteUser
+      operationId: DeleteUser
+      parameters:
+      - description: UserId
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+      summary: Delete user by userId
+      tags:
+      - Users
+    get:
+      consumes:
+      - application/json
+      description: GetUser
+      operationId: GetUser
+      parameters:
+      - description: UserId
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+      summary: Get User by userId
+      tags:
+      - Users
+schemes:
+- http
+swagger: "2.0"

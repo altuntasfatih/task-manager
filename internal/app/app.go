@@ -2,9 +2,10 @@ package app
 
 import (
 	"context"
-	"github.com/altuntasfatih/task-manager/internal/repository"
 	"github.com/altuntasfatih/task-manager/internal/user/handler"
 	"github.com/altuntasfatih/task-manager/internal/user/service"
+	"github.com/altuntasfatih/task-manager/pkg/store/badger_store"
+	fiberSwagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -20,7 +21,9 @@ type App struct {
 type initializerFunc func() error
 
 func NewApp() (*App, error) {
-	app := App{router: fiber.New()}
+	app := App{router: fiber.New(fiber.Config{
+		ErrorHandler: handler.ErrorHandler,
+	})}
 	initializers := []initializerFunc{
 		app.initService,
 		app.initRouter,
@@ -34,31 +37,32 @@ func NewApp() (*App, error) {
 }
 
 func (a *App) initRouter() error {
-	router := fiber.New()
+	router := a.router
 	router.Use(recover.New())
 	router.Use(logger.New())
 
+	router.Get("/_monitoring/health", handler.HealthCheck())
+	router.Get("/swagger/*", fiberSwagger.Handler)
 	router.Get("/", func(ctx *fiber.Ctx) error {
-		return ctx.SendString("Hello, World 👋!")
+		return ctx.Redirect("/swagger/index.html", fiber.StatusMovedPermanently)
 	})
 
-	prefix := "/v1/wallets"
+	prefix := "/v1/users"
 	users := router.Group(prefix)
 
-	users.Post("", handler.CreateUser(""))
-	users.Get("", handler.GetUsers(""))
-	users.Get("/:userId", handler.GetUser(""))
-	users.Delete("/:userId", handler.DeleteUser(""))
-	a.router = router
+	users.Post("", handler.CreateUser(a.userService))
+	users.Get("", handler.GetUsers(a.userService))
+	users.Get("/:userId", handler.GetUser(a.userService))
+	users.Delete("/:userId", handler.DeleteUser(a.userService))
 	return nil
 }
 func (a *App) initService() error {
-	repository, err := repository.NewUserRepository()
+	userStore, err := badger_store.NewClient(false)
 	if err != nil {
 		return err
 	}
 
-	userService, err := service.NewUserService(repository)
+	userService, err := service.NewUserService(userStore)
 	if err != nil {
 		return err
 	}
