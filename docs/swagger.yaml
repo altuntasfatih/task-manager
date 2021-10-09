@@ -5,6 +5,22 @@ definitions:
       message:
         type: string
     type: object
+  models.CreateTaskRequest:
+    properties:
+      endTime:
+        type: string
+      name:
+        type: string
+      reminderPeriodInHour:
+        type: integer
+      startTime:
+        type: string
+    required:
+    - endTime
+    - name
+    - reminderPeriodInHour
+    - startTime
+    type: object
   models.CreateUserRequest:
     properties:
       email:
@@ -18,6 +34,26 @@ definitions:
     - firstName
     - lastName
     type: object
+  models.GetTaskResponse:
+    properties:
+      endTime:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      reminderPeriodInHour:
+        type: integer
+      startTime:
+        type: string
+    type: object
+  models.GetTasksResponse:
+    properties:
+      tasks:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
+    type: object
   models.GetUserResponse:
     properties:
       email:
@@ -28,6 +64,10 @@ definitions:
         type: string
       lastName:
         type: string
+      tasks:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
     type: object
   models.GetUsersResponse:
     properties:
@@ -35,6 +75,19 @@ definitions:
         items:
           $ref: '#/definitions/models.User'
         type: array
+    type: object
+  models.Task:
+    properties:
+      endTime:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      reminderPeriodInHour:
+        type: integer
+      startTime:
+        type: string
     type: object
   models.User:
     properties:
@@ -46,6 +99,10 @@ definitions:
         type: string
       lastName:
         type: string
+      tasks:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
     type: object
 info:
   contact: {}
@@ -121,7 +178,7 @@ paths:
       description: DeleteUser
       operationId: DeleteUser
       parameters:
-      - description: UserId
+      - description: userId
         in: path
         name: userId
         required: true
@@ -152,7 +209,7 @@ paths:
       description: GetUser
       operationId: GetUser
       parameters:
-      - description: UserId
+      - description: userId
         in: path
         name: userId
         required: true
@@ -179,6 +236,154 @@ paths:
       summary: Get User by userId
       tags:
       - Users
+  /v1/users/{userId}/tasks:
+    delete:
+      consumes:
+      - application/json
+      description: DeleteTask
+      operationId: Delete
+      parameters:
+      - description: userId
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: taskID
+        in: path
+        name: taskId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+      summary: Delete user's a task by taskId
+      tags:
+      - Tasks
+    get:
+      consumes:
+      - application/json
+      description: GetTasks
+      operationId: GetTasks
+      parameters:
+      - description: userId
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetTasksResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+      summary: Get user's all task
+      tags:
+      - Tasks
+    post:
+      consumes:
+      - application/json
+      description: CreateTask
+      operationId: CreateTask
+      parameters:
+      - description: userId
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetTaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+      summary: Create a task for user
+      tags:
+      - Tasks
+  /v1/users/{userId}/tasks/{taskId}:
+    get:
+      consumes:
+      - application/json
+      description: GetTask
+      operationId: GetTask
+      parameters:
+      - description: userId
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: taskID
+        in: path
+        name: taskId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetTaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+      summary: Get user's a task by taskId
+      tags:
+      - Tasks
 schemes:
 - http
 swagger: "2.0"

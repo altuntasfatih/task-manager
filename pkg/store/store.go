@@ -1,11 +1,9 @@
 package store
 
 import (
-	"errors"
 	"github.com/altuntasfatih/task-manager/pkg/models"
 )
 
-var ErrUserNotFound = errors.New("user not found")
 
 type Reader interface {
 	GetUser(id string) (*models.User, error)

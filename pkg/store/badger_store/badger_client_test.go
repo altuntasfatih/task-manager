@@ -1,6 +1,7 @@
 package badger_store
 
 import (
+	"github.com/altuntasfatih/task-manager/pkg/custom"
 	"github.com/altuntasfatih/task-manager/pkg/models"
 	"github.com/altuntasfatih/task-manager/pkg/store"
 	"github.com/rs/xid"
@@ -36,7 +37,7 @@ func TestClient_Get(t *testing.T) {
 	guid := xid.New().String()
 	_, err := badgerStore.GetUser(guid)
 
-	require.Equal(t, err, store.ErrUserNotFound)
+	require.Equal(t, err, custom.ErrUserNotFound)
 }
 
 func TestClient_Remove(t *testing.T) {
@@ -50,5 +51,5 @@ func TestClient_Remove(t *testing.T) {
 
 	_, err = badgerStore.GetUser(guid)
 
-	require.Equal(t, err, store.ErrUserNotFound)
+	require.Equal(t, err, custom.ErrUserNotFound)
 }

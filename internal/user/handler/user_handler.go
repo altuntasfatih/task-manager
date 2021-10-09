@@ -47,7 +47,7 @@ func CreateUser(service service.UserService) fiber.Handler {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param userId path string true "UserId"
+// @Param userId path string true "userId"
 // @Success 200 {object} models.GetUserResponse
 // @Failure 400 {object} custom.ErrorResponse
 // @Failure 404 {object} custom.ErrorResponse
@@ -99,7 +99,7 @@ func GetUsers(service service.UserService) fiber.Handler {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param userId path string true "UserId"
+// @Param userId path string true "userId"
 // @Success 200
 // @Failure 400 {object} custom.ErrorResponse
 // @Failure 404 {object} custom.ErrorResponse

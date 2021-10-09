@@ -7,11 +7,12 @@ import (
 )
 
 type UserService interface {
-	GetUsers() ([]*models.User, error)
-	GetUser(userId string) (*models.User, error)
 	CreateUser(request *models.CreateUserRequest) (*models.User, error)
+	GetUser(userId string) (*models.User, error)
 	DeleteUser(userId string) error
+	GetUsers() ([]*models.User, error)
 }
+
 type userService struct {
 	userStore store.ReaderWriterRemover
 }
@@ -32,7 +33,7 @@ func (u *userService) GetUser(userId string) (*models.User, error) {
 
 func (u *userService) CreateUser(request *models.CreateUserRequest) (*models.User, error) {
 	guid := xid.New().String()
-	newUser := &models.User{Id: guid, Email: request.Email, FirstName: request.FirstName, LastName: request.LastName}
+	newUser := models.NewUser(guid, request.Email, request.FirstName, request.LastName)
 	err := u.userStore.CreateUser(guid, newUser)
 	if err != nil {
 		return nil, err

@@ -3,6 +3,7 @@ package badger_store
 import (
 	"bytes"
 	"encoding/gob"
+	"github.com/altuntasfatih/task-manager/pkg/custom"
 	"github.com/altuntasfatih/task-manager/pkg/models"
 	"github.com/altuntasfatih/task-manager/pkg/store"
 	"github.com/dgraph-io/badger/v3"
@@ -36,12 +37,12 @@ func (c *client) GetUser(id string) (*models.User, error) {
 
 		if err != nil {
 			if err == badger.ErrKeyNotFound {
-				return store.ErrUserNotFound
+				return custom.ErrUserNotFound
 			}
 			return err
 		}
 
-		return c.parseItem(item, &user)
+		return parseItem(item, &user)
 	})
 }
 func (c *client) GetAllUsers() ([]*models.User, error) {
@@ -54,7 +55,7 @@ func (c *client) GetAllUsers() ([]*models.User, error) {
 		for it.Rewind(); it.Valid(); it.Next() {
 			item := it.Item()
 			var user models.User
-			if err := c.parseItem(item, &user); err == nil {
+			if err := parseItem(item, &user); err == nil {
 				users = append(users, &user)
 			}
 		}
@@ -76,6 +77,7 @@ func (c *client) CreateUser(id string, value *models.User) error {
 }
 
 func (c *client) UpdateUser(id string, value *models.User) error {
+	//todo come back later
 	return c.CreateUser(id, value)
 }
 
@@ -83,13 +85,13 @@ func (c *client) DeleteUser(id string) error {
 	return c.db.Update(func(txn *badger.Txn) error {
 		_, err := txn.Get([]byte(id))
 		if err != nil {
-			return store.ErrUserNotFound
+			return custom.ErrUserNotFound
 		}
 		return txn.Delete([]byte(id))
 	})
 }
 
-func (c *client) parseItem(item *badger.Item, value *models.User) error {
+func parseItem(item *badger.Item, value *models.User) error {
 
 	val, err := item.ValueCopy(nil)
 	if err != nil {

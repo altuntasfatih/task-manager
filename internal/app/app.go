@@ -16,6 +16,7 @@ import (
 type App struct {
 	router      *fiber.App
 	userService service.UserService
+	taskService service.TaskService
 }
 
 type initializerFunc func() error
@@ -47,13 +48,24 @@ func (a *App) initRouter() error {
 		return ctx.Redirect("/swagger/index.html", fiber.StatusMovedPermanently)
 	})
 
-	prefix := "/v1/users"
-	users := router.Group(prefix)
+	{
+		userPrefix := "/v1/users"
+		users := router.Group(userPrefix)
+		users.Post("", handler.CreateUser(a.userService))
+		users.Get("", handler.GetUsers(a.userService))
+		users.Get("/:userId", handler.GetUser(a.userService))
+		users.Delete("/:userId", handler.DeleteUser(a.userService))
+	}
 
-	users.Post("", handler.CreateUser(a.userService))
-	users.Get("", handler.GetUsers(a.userService))
-	users.Get("/:userId", handler.GetUser(a.userService))
-	users.Delete("/:userId", handler.DeleteUser(a.userService))
+	{
+		tasksPrefix := "/v1/users/:userId/tasks"
+		tasks := router.Group(tasksPrefix)
+		tasks.Post("", handler.CreateTask(a.taskService))
+		tasks.Get("", handler.GetTasks(a.taskService))
+		tasks.Get("/:taskId", handler.GetTask(a.taskService))
+		tasks.Delete("/:taskId", handler.DeleteTask(a.taskService))
+	}
+
 	return nil
 }
 func (a *App) initService() error {
@@ -66,7 +78,13 @@ func (a *App) initService() error {
 	if err != nil {
 		return err
 	}
+	taskService, err := service.NewTaskService(userStore)
+	if err != nil {
+		return err
+	}
+
 	a.userService = userService
+	a.taskService = taskService
 	return nil
 
 }

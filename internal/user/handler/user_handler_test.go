@@ -16,7 +16,7 @@ import (
 	"testing"
 )
 
-func initRouter(service service.UserService) *fiber.App {
+func initUserRouter(service service.UserService) *fiber.App {
 	router := fiber.New(fiber.Config{
 		ErrorHandler: ErrorHandler,
 	})
@@ -32,7 +32,7 @@ func initRouter(service service.UserService) *fiber.App {
 func TestCreateUser(t *testing.T) {
 	userStore, _ := badger_store.NewClient(true)
 	userService, _ := service.NewUserService(userStore)
-	router := initRouter(userService)
+	router := initUserRouter(userService)
 
 	request := models.CreateUserRequest{Email: "test@gmail.com", FirstName: "testName", LastName: "testLastName"}
 	req := createRequest("POST", "/v1/users", request)
@@ -44,19 +44,19 @@ func TestCreateUser(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, resp.StatusCode, fiber.StatusOK)
 
-	var user models.User
-	parseResponseToStruct(resp, &user)
+	var response models.GetUserResponse
+	parseResponseToStruct(resp, &response)
 
-	require.Equal(t, user.Email, request.Email)
-	require.Equal(t, user.FirstName, request.FirstName)
-	require.Equal(t, user.LastName, request.LastName)
-	require.NotEmpty(t, user.Id)
+	require.Equal(t, response.Email, request.Email)
+	require.Equal(t, response.FirstName, request.FirstName)
+	require.Equal(t, response.LastName, request.LastName)
+	require.NotEmpty(t, response.Id)
 }
 
 func TestCreateUser_WhenRequestInvalid(t *testing.T) {
 	userStore, _ := badger_store.NewClient(true)
 	userService, _ := service.NewUserService(userStore)
-	router := initRouter(userService)
+	router := initUserRouter(userService)
 
 	request := models.CreateUserRequest{Email: "test", FirstName: "testName", LastName: "testLastName"}
 	req := createRequest("POST", "/v1/users", request)
@@ -72,9 +72,9 @@ func TestCreateUser_WhenRequestInvalid(t *testing.T) {
 func TestGetUser(t *testing.T) {
 	userStore, _ := badger_store.NewClient(true)
 	userService, _ := service.NewUserService(userStore)
-	router := initRouter(userService)
+	router := initUserRouter(userService)
 
-	expectedUser := &models.User{Id: "1", Email: "test@gmail.com", FirstName: "testName", LastName: "testLastName"}
+	expectedUser := models.NewUser("1", "test@gmail.com", "testName", "testLastName")
 	storeUser(userStore, expectedUser)
 	req := createRequest("GET", "/v1/users/"+expectedUser.Id, nil)
 
@@ -95,12 +95,14 @@ func TestGetUser(t *testing.T) {
 func TestGetUser_WhenUserNotFound(t *testing.T) {
 	userStore, _ := badger_store.NewClient(true)
 	userService, _ := service.NewUserService(userStore)
-	router := initRouter(userService)
+	router := initUserRouter(userService)
 
 	req := createRequest("GET", "/v1/users/fake", nil)
 
 	//when
 	resp, err := router.Test(req)
+
+	//then
 	require.Nil(t, err)
 	require.Equal(t, resp.StatusCode, fiber.StatusNotFound)
 }
@@ -108,11 +110,11 @@ func TestGetUser_WhenUserNotFound(t *testing.T) {
 func TestGetUsers(t *testing.T) {
 	userStore, _ := badger_store.NewClient(true)
 	userService, _ := service.NewUserService(userStore)
-	router := initRouter(userService)
+	router := initUserRouter(userService)
 
-	storeUser(userStore, &models.User{Id: "1", Email: "test@gmail.com", FirstName: "testName", LastName: "testLastName"})
-	storeUser(userStore, &models.User{Id: "2", Email: "test@gmail.com", FirstName: "testName", LastName: "testLastName"})
-	storeUser(userStore, &models.User{Id: "3", Email: "test@gmail.com", FirstName: "testName", LastName: "testLastName"})
+	storeUser(userStore, models.NewUser("1", "test@gmail.com", "testName", "testLastName"))
+	storeUser(userStore, models.NewUser("2", "test@gmail.com", "testName", "testLastName"))
+	storeUser(userStore, models.NewUser("3", "test@gmail.com", "testName", "testLastName"))
 
 	req := createRequest("GET", "/v1/users/", nil)
 
@@ -130,9 +132,8 @@ func TestGetUsers(t *testing.T) {
 func TestDeleteUser(t *testing.T) {
 	userStore, _ := badger_store.NewClient(true)
 	userService, _ := service.NewUserService(userStore)
-	router := initRouter(userService)
-
-	storeUser(userStore, &models.User{Id: "1", Email: "test@gmail.com", FirstName: "testName", LastName: "testLastName"})
+	router := initUserRouter(userService)
+	storeUser(userStore, models.NewUser("1", "test@gmail.com", "testName", "testLastName"))
 
 	req := createRequest("DELETE", "/v1/users/1", nil)
 
