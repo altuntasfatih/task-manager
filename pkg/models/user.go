@@ -6,12 +6,19 @@ import (
 )
 
 type User struct {
-	Id        string   `json:"id"`
-	Email     string   `json:"email"`
-	FirstName string   `json:"firstName"`
-	LastName  string   `json:"lastName"`
-	Tasks     TaskList `json:"tasks"`
+	Id             string         `json:"id"`
+	Email          string         `json:"email"`
+	FirstName      string         `json:"firstName"`
+	LastName       string         `json:"lastName"`
+	Tasks          TaskList       `json:"tasks"`
+	ReminderMethod ReminderMethod `json:"reminderMethod"`
 }
+type ReminderMethod string
+
+const (
+	Email  ReminderMethod = "email"
+	Onsite ReminderMethod = "onsite"
+)
 
 func NewUser(id, email, firsName, lastName string) *User {
 	return &User{Id: id, Email: email, FirstName: firsName, LastName: lastName, Tasks: make([]*Task, 0)}

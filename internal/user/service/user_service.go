@@ -11,6 +11,7 @@ type UserService interface {
 	GetUser(userId string) (*models.User, error)
 	DeleteUser(userId string) error
 	GetUsers() ([]*models.User, error)
+	SetReminder(userId string, method models.ReminderMethod) (*models.User, error)
 }
 
 type userService struct {
@@ -43,4 +44,17 @@ func (u *userService) CreateUser(request *models.CreateUserRequest) (*models.Use
 
 func (u *userService) DeleteUser(userId string) error {
 	return u.userStore.DeleteUser(userId)
+}
+
+func (u *userService) SetReminder(userId string, method models.ReminderMethod) (*models.User, error) {
+	user, err := u.userStore.GetUser(userId)
+	if err != nil {
+		return nil, err
+	}
+	user.ReminderMethod = method
+
+	if err := u.userStore.UpdateUser(userId, user); err != nil {
+		return nil, err
+	}
+	return user, nil
 }

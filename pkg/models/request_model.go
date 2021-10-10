@@ -8,12 +8,16 @@ type CreateUserRequest struct {
 	LastName  string `json:"lastName" validate:"required"`
 }
 
+type SetReminderRequest struct {
+	Method ReminderMethod `json:"method" validate:"required,oneof=email onsite"`
+}
+
 type PeriodType string
 
 const (
 	Minute PeriodType = "minute"
-	Hour              = "hour"
-	Day               = "day"
+	Hour   PeriodType = "hour"
+	Day    PeriodType = "day"
 )
 
 type CreateTaskRequest struct {

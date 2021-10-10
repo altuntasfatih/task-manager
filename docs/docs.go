@@ -213,6 +213,66 @@ var doc = `{
                 }
             }
         },
+        "/v1/users/{userId}/reminder": {
+            "put": {
+                "description": "SetReminder",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Set reminder method of a user",
+                "operationId": "SetReminder",
+                "parameters": [
+                    {
+                        "description": "Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SetReminderRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/custom.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/custom.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/custom.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/users/{userId}/tasks": {
             "get": {
                 "description": "GetTasks",
@@ -536,6 +596,9 @@ var doc = `{
                 "lastName": {
                     "type": "string"
                 },
+                "reminderMethod": {
+                    "type": "string"
+                },
                 "tasks": {
                     "type": "array",
                     "items": {
@@ -552,6 +615,17 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/models.User"
                     }
+                }
+            }
+        },
+        "models.SetReminderRequest": {
+            "type": "object",
+            "required": [
+                "method"
+            ],
+            "properties": {
+                "method": {
+                    "type": "string"
                 }
             }
         },
@@ -589,6 +663,9 @@ var doc = `{
                     "type": "string"
                 },
                 "lastName": {
+                    "type": "string"
+                },
+                "reminderMethod": {
                     "type": "string"
                 },
                 "tasks": {

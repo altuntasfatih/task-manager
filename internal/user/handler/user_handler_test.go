@@ -26,6 +26,7 @@ func initUserRouter(service service.UserService) *fiber.App {
 	users.Get("", GetUsers(service))
 	users.Get("/:userId", GetUser(service))
 	users.Delete("/:userId", DeleteUser(service))
+	users.Put("/:userId/reminder", SetReminder(service))
 	return router
 }
 
@@ -141,6 +142,29 @@ func TestDeleteUser(t *testing.T) {
 	resp, err := router.Test(req)
 	require.Nil(t, err)
 	require.Equal(t, resp.StatusCode, fiber.StatusOK)
+}
+
+func TestSetReminder(t *testing.T) {
+	userStore, _ := badger_storage.NewClient(true)
+	userService, _ := service.NewUserService(userStore)
+	router := initUserRouter(userService)
+	storeUser(userStore, models.NewUser("1", "test@gmail.com", "testName", "testLastName"))
+
+	request := models.SetReminderRequest{Method: models.Onsite}
+	req := createRequest("PUT", "/v1/users/1/reminder", request)
+
+	//when
+	resp, err := router.Test(req)
+
+	//then
+	require.Nil(t, err)
+	require.Equal(t, resp.StatusCode, fiber.StatusOK)
+
+	var response models.GetUserResponse
+	parseResponseToStruct(resp, &response)
+
+	require.Equal(t, response.ReminderMethod, models.Onsite)
+
 }
 
 func storeUser(store storage.Writer, user *models.User) {

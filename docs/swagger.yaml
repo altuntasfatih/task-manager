@@ -68,6 +68,8 @@ definitions:
         type: string
       lastName:
         type: string
+      reminderMethod:
+        type: string
       tasks:
         items:
           $ref: '#/definitions/models.Task'
@@ -79,6 +81,13 @@ definitions:
         items:
           $ref: '#/definitions/models.User'
         type: array
+    type: object
+  models.SetReminderRequest:
+    properties:
+      method:
+        type: string
+    required:
+    - method
     type: object
   models.Task:
     properties:
@@ -103,6 +112,8 @@ definitions:
       id:
         type: string
       lastName:
+        type: string
+      reminderMethod:
         type: string
       tasks:
         items:
@@ -239,6 +250,46 @@ paths:
           schema:
             $ref: '#/definitions/custom.ErrorResponse'
       summary: Get User by userId
+      tags:
+      - Users
+  /v1/users/{userId}/reminder:
+    put:
+      consumes:
+      - application/json
+      description: SetReminder
+      operationId: SetReminder
+      parameters:
+      - description: Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.SetReminderRequest'
+      - description: userId
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+      summary: Set reminder method of a user
       tags:
       - Users
   /v1/users/{userId}/tasks:

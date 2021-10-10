@@ -55,6 +55,7 @@ func (a *App) initRouter() error {
 		users.Get("", handler.GetUsers(a.userService))
 		users.Get("/:userId", handler.GetUser(a.userService))
 		users.Delete("/:userId", handler.DeleteUser(a.userService))
+		users.Put("/:userId/reminder", handler.SetReminder(a.userService))
 	}
 
 	{

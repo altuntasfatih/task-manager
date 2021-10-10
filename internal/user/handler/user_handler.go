@@ -35,7 +35,7 @@ func CreateUser(service service.UserService) fiber.Handler {
 		if err != nil {
 			return err
 		}
-		return ctx.JSON(user)
+		return ctx.JSON(&models.GetUserResponse{User: user})
 	}
 }
 
@@ -60,9 +60,7 @@ func GetUser(service service.UserService) fiber.Handler {
 			return err
 		}
 
-		return ctx.JSON(&models.GetUserResponse{
-			User: user,
-		})
+		return ctx.JSON(&models.GetUserResponse{User: user})
 	}
 }
 
@@ -111,5 +109,39 @@ func DeleteUser(service service.UserService) fiber.Handler {
 			return err
 		}
 		return ctx.Send(nil)
+	}
+}
+
+// SetReminder godoc
+// @Summary Set reminder method of a user
+// @Description SetReminder
+// @ID SetReminder
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param request body models.SetReminderRequest true "Request"
+// @Param userId path string true "userId"
+// @Success 200 {object} models.GetUserResponse
+// @Failure 400 {object} custom.ErrorResponse
+// @Failure 404 {object} custom.ErrorResponse
+// @Failure 500 {object} custom.ErrorResponse
+// @Router /v1/users/{userId}/reminder [put]
+func SetReminder(service service.UserService) fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		var request models.SetReminderRequest
+		if err := ctx.BodyParser(&request); err != nil {
+			return err
+		}
+
+		if err := validator.ValidateRequest(request); err != nil {
+			return err
+		}
+
+		userId := ctx.Params("userId", "")
+		user, err := service.SetReminder(userId, request.Method)
+		if err != nil {
+			return err
+		}
+		return ctx.JSON(&models.GetUserResponse{User: user})
 	}
 }
