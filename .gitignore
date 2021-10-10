@@ -44,5 +44,6 @@ _testmain.go
 /test/pass.out
 /test/run.out
 /test/times.out
+storage
 
 # This file includes artifacts of Go build that should not be checked in.

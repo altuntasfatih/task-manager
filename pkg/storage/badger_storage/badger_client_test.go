@@ -1,16 +1,16 @@
-package badger_store
+package badger_storage
 
 import (
 	"github.com/altuntasfatih/task-manager/pkg/custom"
 	"github.com/altuntasfatih/task-manager/pkg/models"
-	"github.com/altuntasfatih/task-manager/pkg/store"
+	"github.com/altuntasfatih/task-manager/pkg/storage"
 	"github.com/rs/xid"
 	"github.com/stretchr/testify/require"
 	"log"
 	"testing"
 )
 
-var badgerStore store.ReaderWriterRemover
+var badgerStore storage.ReaderWriterRemover
 
 func init() {
 	var err error

@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/altuntasfatih/task-manager/internal/user/handler"
 	"github.com/altuntasfatih/task-manager/internal/user/service"
-	"github.com/altuntasfatih/task-manager/pkg/store/badger_store"
+	"github.com/altuntasfatih/task-manager/pkg/storage/badger_storage"
 	fiberSwagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -68,8 +68,9 @@ func (a *App) initRouter() error {
 
 	return nil
 }
+
 func (a *App) initService() error {
-	userStore, err := badger_store.NewClient(false)
+	userStore, err := badger_storage.NewClient(false)
 	if err != nil {
 		return err
 	}
@@ -88,6 +89,7 @@ func (a *App) initService() error {
 	return nil
 
 }
+
 func (a *App) Listen(ctx context.Context, wg *sync.WaitGroup) {
 	log.Println("Web server starting...")
 

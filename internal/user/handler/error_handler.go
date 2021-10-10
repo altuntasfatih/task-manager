@@ -13,7 +13,7 @@ func ErrorHandler(c *fiber.Ctx, err error) error {
 
 	}
 
-	if err == custom.ErrUserNotFound || err == custom.ErrTaskNotFound {
+	if err == custom.ErrUserNotFound || err == custom.ErrTaskNotFound || err == custom.ErrTaskIsOverLap {
 		return c.Status(fiber.StatusNotFound).JSON(custom.ErrorResponse{Message: err.Error()})
 	}
 

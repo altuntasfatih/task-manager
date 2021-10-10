@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/altuntasfatih/task-manager/internal/user/service"
 	"github.com/altuntasfatih/task-manager/pkg/models"
 	"github.com/altuntasfatih/task-manager/pkg/validator"
@@ -109,7 +108,6 @@ func DeleteUser(service service.UserService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		userId := ctx.Params("userId", "")
 		if err := service.DeleteUser(userId); err != nil {
-			fmt.Println(err)
 			return err
 		}
 		return ctx.Send(nil)

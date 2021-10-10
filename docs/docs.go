@@ -320,59 +320,6 @@ var doc = `{
                         }
                     }
                 }
-            },
-            "delete": {
-                "description": "DeleteTask",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Tasks"
-                ],
-                "summary": "Delete user's a task by taskId",
-                "operationId": "Delete",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "userId",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "taskID",
-                        "name": "taskId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    }
-                }
             }
         },
         "/v1/users/{userId}/tasks/{taskId}": {
@@ -431,6 +378,59 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "DeleteTask",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Delete user's a task by taskId",
+                "operationId": "Delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "taskID",
+                        "name": "taskId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/custom.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/custom.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/custom.ErrorResponse"
+                        }
+                    }
+                }
             }
         }
     },
@@ -448,7 +448,8 @@ var doc = `{
             "required": [
                 "endTime",
                 "name",
-                "reminderPeriodInHour",
+                "periodType",
+                "reminderPeriod",
                 "startTime"
             ],
             "properties": {
@@ -458,7 +459,10 @@ var doc = `{
                 "name": {
                     "type": "string"
                 },
-                "reminderPeriodInHour": {
+                "periodType": {
+                    "type": "string"
+                },
+                "reminderPeriod": {
                     "type": "integer"
                 },
                 "startTime": {
@@ -492,12 +496,13 @@ var doc = `{
                     "type": "string"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
                 },
-                "reminderPeriodInHour": {
+                "reminderPeriod": {
+                    "description": "in nanosecond",
                     "type": "integer"
                 },
                 "startTime": {
@@ -557,12 +562,13 @@ var doc = `{
                     "type": "string"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
                 },
-                "reminderPeriodInHour": {
+                "reminderPeriod": {
+                    "description": "in nanosecond",
                     "type": "integer"
                 },
                 "startTime": {

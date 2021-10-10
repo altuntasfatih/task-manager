@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"github.com/altuntasfatih/task-manager/internal/user/service"
 	"github.com/altuntasfatih/task-manager/pkg/models"
-	"github.com/altuntasfatih/task-manager/pkg/store"
-	"github.com/altuntasfatih/task-manager/pkg/store/badger_store"
+	"github.com/altuntasfatih/task-manager/pkg/storage"
+	"github.com/altuntasfatih/task-manager/pkg/storage/badger_storage"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/require"
 	"io"
@@ -30,7 +30,7 @@ func initUserRouter(service service.UserService) *fiber.App {
 }
 
 func TestCreateUser(t *testing.T) {
-	userStore, _ := badger_store.NewClient(true)
+	userStore, _ := badger_storage.NewClient(true)
 	userService, _ := service.NewUserService(userStore)
 	router := initUserRouter(userService)
 
@@ -54,7 +54,7 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestCreateUser_WhenRequestInvalid(t *testing.T) {
-	userStore, _ := badger_store.NewClient(true)
+	userStore, _ := badger_storage.NewClient(true)
 	userService, _ := service.NewUserService(userStore)
 	router := initUserRouter(userService)
 
@@ -70,7 +70,7 @@ func TestCreateUser_WhenRequestInvalid(t *testing.T) {
 }
 
 func TestGetUser(t *testing.T) {
-	userStore, _ := badger_store.NewClient(true)
+	userStore, _ := badger_storage.NewClient(true)
 	userService, _ := service.NewUserService(userStore)
 	router := initUserRouter(userService)
 
@@ -93,7 +93,7 @@ func TestGetUser(t *testing.T) {
 }
 
 func TestGetUser_WhenUserNotFound(t *testing.T) {
-	userStore, _ := badger_store.NewClient(true)
+	userStore, _ := badger_storage.NewClient(true)
 	userService, _ := service.NewUserService(userStore)
 	router := initUserRouter(userService)
 
@@ -108,7 +108,7 @@ func TestGetUser_WhenUserNotFound(t *testing.T) {
 }
 
 func TestGetUsers(t *testing.T) {
-	userStore, _ := badger_store.NewClient(true)
+	userStore, _ := badger_storage.NewClient(true)
 	userService, _ := service.NewUserService(userStore)
 	router := initUserRouter(userService)
 
@@ -130,7 +130,7 @@ func TestGetUsers(t *testing.T) {
 }
 
 func TestDeleteUser(t *testing.T) {
-	userStore, _ := badger_store.NewClient(true)
+	userStore, _ := badger_storage.NewClient(true)
 	userService, _ := service.NewUserService(userStore)
 	router := initUserRouter(userService)
 	storeUser(userStore, models.NewUser("1", "test@gmail.com", "testName", "testLastName"))
@@ -143,7 +143,7 @@ func TestDeleteUser(t *testing.T) {
 	require.Equal(t, resp.StatusCode, fiber.StatusOK)
 }
 
-func storeUser(store store.Writer, user *models.User) {
+func storeUser(store storage.Writer, user *models.User) {
 	_ = store.CreateUser(user.Id, user)
 }
 

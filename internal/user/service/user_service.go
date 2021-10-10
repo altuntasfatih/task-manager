@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/altuntasfatih/task-manager/pkg/models"
-	"github.com/altuntasfatih/task-manager/pkg/store"
+	"github.com/altuntasfatih/task-manager/pkg/storage"
 	"github.com/rs/xid"
 )
 
@@ -14,10 +14,10 @@ type UserService interface {
 }
 
 type userService struct {
-	userStore store.ReaderWriterRemover
+	userStore storage.ReaderWriterRemover
 }
 
-func NewUserService(userStore store.ReaderWriterRemover) (UserService, error) {
+func NewUserService(userStore storage.ReaderWriterRemover) (UserService, error) {
 	return &userService{
 		userStore: userStore,
 	}, nil

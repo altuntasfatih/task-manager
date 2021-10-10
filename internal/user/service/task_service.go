@@ -1,9 +1,8 @@
 package service
 
 import (
-	"github.com/altuntasfatih/task-manager/pkg/custom"
 	"github.com/altuntasfatih/task-manager/pkg/models"
-	"github.com/altuntasfatih/task-manager/pkg/store"
+	"github.com/altuntasfatih/task-manager/pkg/storage"
 )
 
 type TaskService interface {
@@ -13,7 +12,7 @@ type TaskService interface {
 	GetTasks(userId string) ([]*models.Task, error)
 }
 
-func NewTaskService(userStore store.ReaderWriterRemover) (TaskService, error) {
+func NewTaskService(userStore storage.ReaderWriterRemover) (TaskService, error) {
 	return &userService{
 		userStore: userStore,
 	}, nil
@@ -25,21 +24,13 @@ func (u *userService) CreateTask(userId string, request *models.CreateTaskReques
 		return nil, err
 	}
 
-	newTask := &models.Task{
-		Id:                   len(user.Tasks) + 1,
-		Name:                 request.Name,
-		StartTime:            request.StartTime,
-		EndTime:              request.EndTime,
-		ReminderPeriodInHour: request.ReminderPeriodInHour,
+	newTask := models.NewTask(len(user.Tasks)+1, request.Name, request.StartTime, request.EndTime, request.ReminderPeriod, request.PeriodType)
+
+	if err := user.AddTask(newTask); err != nil {
+		return nil, err
 	}
 
-	if user.IsTaskOverLapWithOther(newTask) {
-		return nil, custom.ErrTaskIsOverLap
-	}
-
-	user.AddTask(newTask)
-	err = u.userStore.UpdateUser(user.Id, user)
-	if err != nil {
+	if err := u.userStore.UpdateUser(user.Id, user); err != nil {
 		return nil, err
 	}
 	return newTask, nil
@@ -67,10 +58,8 @@ func (u *userService) DeleteTask(userId string, taskId int) error {
 	if err != nil {
 		return err
 	}
-	index, _, err := user.SearchTask(taskId)
-	if err != nil {
+	if err := user.RemoveTask(taskId); err != nil {
 		return err
 	}
-	user.RemoveTask(index)
 	return u.userStore.UpdateUser(user.Id, user)
 }

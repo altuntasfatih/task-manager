@@ -1,22 +1,22 @@
-package badger_store
+package badger_storage
 
 import (
 	"bytes"
 	"encoding/gob"
 	"github.com/altuntasfatih/task-manager/pkg/custom"
 	"github.com/altuntasfatih/task-manager/pkg/models"
-	"github.com/altuntasfatih/task-manager/pkg/store"
+	"github.com/altuntasfatih/task-manager/pkg/storage"
 	"github.com/dgraph-io/badger/v3"
 	"log"
 )
 
-var dbPath = "./badger_store/"
+var dbPath = "./storage/"
 
 type client struct {
 	db *badger.DB
 }
 
-func NewClient(inMemory bool) (store.ReaderWriterRemover, error) {
+func NewClient(inMemory bool) (storage.ReaderWriterRemover, error) {
 	var opt badger.Options
 	if inMemory {
 		opt = badger.DefaultOptions("").WithInMemory(inMemory)
@@ -101,6 +101,6 @@ func parseItem(item *badger.Item, value *models.User) error {
 	if err := d.Decode(value); err != nil {
 		return err
 	}
-	log.Printf("Decoded Struct from badger_store :  [%v] \n", value)
+	log.Printf("Decoded Struct from badger_storage :  [%v] \n", value)
 	return nil
 }

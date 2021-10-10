@@ -1,9 +1,8 @@
-package store
+package storage
 
 import (
 	"github.com/altuntasfatih/task-manager/pkg/models"
 )
-
 
 type Reader interface {
 	GetUser(id string) (*models.User, error)

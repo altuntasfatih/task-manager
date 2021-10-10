@@ -8,9 +8,18 @@ type CreateUserRequest struct {
 	LastName  string `json:"lastName" validate:"required"`
 }
 
+type PeriodType string
+
+const (
+	Minute PeriodType = "minute"
+	Hour              = "hour"
+	Day               = "day"
+)
+
 type CreateTaskRequest struct {
-	Name                 string    `json:"name" validate:"required"`
-	StartTime            time.Time `json:"startTime" validate:"required"`
-	EndTime              time.Time `json:"endTime" validate:"required"`
-	ReminderPeriodInHour int       `json:"reminderPeriodInHour" validate:"required,gt=0"`
+	Name           string     `json:"name" validate:"required"`
+	StartTime      time.Time  `json:"startTime" validate:"required"`
+	EndTime        time.Time  `json:"endTime" validate:"required"`
+	ReminderPeriod int64      `json:"reminderPeriod" validate:"required,gt=0"`
+	PeriodType     PeriodType `json:"periodType" validate:"required,oneof=minute hour day"`
 }

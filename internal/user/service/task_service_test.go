@@ -9,11 +9,11 @@ import (
 )
 
 func Test_Sort(t *testing.T) {
-	task1 := models.NewTask(1, "task1", time.Now(), time.Now().Add(1*time.Hour), 5)
-	task2 := models.NewTask(2, "task2", time.Now().Add(-9*time.Hour), time.Now().Add(-8*time.Hour), 5)
-	task3 := models.NewTask(3, "task3", time.Now().Add(4*time.Hour), time.Now().Add(5*time.Hour), 5)
-	task4 := models.NewTask(4, "task4", time.Now().Add(-3*time.Hour), time.Now().Add(-2*time.Hour), 5)
-	task5 := models.NewTask(5, "task5", time.Now().Add(2*time.Hour), time.Now().Add(3*time.Hour), 5)
+	task1 := models.NewTask(1, "task1", time.Now(), time.Now().Add(1*time.Hour), 5, models.Minute)
+	task2 := models.NewTask(2, "task2", time.Now().Add(-9*time.Hour), time.Now().Add(-8*time.Hour), 5, models.Minute)
+	task3 := models.NewTask(3, "task3", time.Now().Add(4*time.Hour), time.Now().Add(5*time.Hour), 5, models.Minute)
+	task4 := models.NewTask(4, "task4", time.Now().Add(-3*time.Hour), time.Now().Add(-2*time.Hour), 5, models.Minute)
+	task5 := models.NewTask(5, "task5", time.Now().Add(2*time.Hour), time.Now().Add(3*time.Hour), 5, models.Minute)
 	taskList := models.TaskList{task1, task2, task3, task4, task5}
 	sort.Sort(taskList)
 

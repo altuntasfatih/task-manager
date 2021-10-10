@@ -6,11 +6,11 @@ import (
 )
 
 type User struct {
-	Id        string
-	Email     string
-	FirstName string
-	LastName  string
-	Tasks     TaskList
+	Id        string   `json:"id"`
+	Email     string   `json:"email"`
+	FirstName string   `json:"firstName"`
+	LastName  string   `json:"lastName"`
+	Tasks     TaskList `json:"tasks"`
 }
 
 func NewUser(id, email, firsName, lastName string) *User {
@@ -21,9 +21,13 @@ func (u *User) SortTasks() {
 	sort.Sort(u.Tasks)
 }
 
-func (u *User) AddTask(task *Task) {
+func (u *User) AddTask(task *Task) error {
+	if u.IsTaskOverLapWithOther(task) {
+		return custom.ErrTaskIsOverLap
+	}
 	u.Tasks = append(u.Tasks, task)
 	u.SortTasks()
+	return nil
 }
 
 func (u *User) SearchTask(taskId int) (index int, task *Task, err error) {
@@ -35,8 +39,13 @@ func (u *User) SearchTask(taskId int) (index int, task *Task, err error) {
 	return 0, nil, custom.ErrTaskNotFound
 }
 
-func (u *User) RemoveTask(index int) {
+func (u *User) RemoveTask(taskId int) error {
+	index, _, err := u.SearchTask(taskId)
+	if err != nil {
+		return err
+	}
 	u.Tasks = append(u.Tasks[:index], u.Tasks[index+1:]...)
+	return nil
 }
 
 func (u User) IsTaskOverLapWithOther(newTask *Task) bool {
@@ -46,7 +55,7 @@ func (u User) IsTaskOverLapWithOther(newTask *Task) bool {
 	}
 
 	lastIndex := sort.Search(taskLength, func(i int) bool {
-		return u.Tasks[i].StartTime.Before(newTask.StartTime)
+		return u.Tasks[i].StartTime.After(newTask.StartTime)
 	})
 
 	if lastIndex == 0 {
@@ -57,7 +66,7 @@ func (u User) IsTaskOverLapWithOther(newTask *Task) bool {
 		return u.Tasks[lastIndex-1].EndTime.After(newTask.StartTime)
 
 	}
-	return u.Tasks[lastIndex-1].EndTime.After(newTask.StartTime)
+	return u.Tasks[lastIndex].EndTime.After(newTask.StartTime)
 }
 
 type TaskList []*Task

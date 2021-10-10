@@ -11,14 +11,17 @@ definitions:
         type: string
       name:
         type: string
-      reminderPeriodInHour:
+      periodType:
+        type: string
+      reminderPeriod:
         type: integer
       startTime:
         type: string
     required:
     - endTime
     - name
-    - reminderPeriodInHour
+    - periodType
+    - reminderPeriod
     - startTime
     type: object
   models.CreateUserRequest:
@@ -39,10 +42,11 @@ definitions:
       endTime:
         type: string
       id:
-        type: string
+        type: integer
       name:
         type: string
-      reminderPeriodInHour:
+      reminderPeriod:
+        description: in nanosecond
         type: integer
       startTime:
         type: string
@@ -81,10 +85,11 @@ definitions:
       endTime:
         type: string
       id:
-        type: string
+        type: integer
       name:
         type: string
-      reminderPeriodInHour:
+      reminderPeriod:
+        description: in nanosecond
         type: integer
       startTime:
         type: string
@@ -237,42 +242,6 @@ paths:
       tags:
       - Users
   /v1/users/{userId}/tasks:
-    delete:
-      consumes:
-      - application/json
-      description: DeleteTask
-      operationId: Delete
-      parameters:
-      - description: userId
-        in: path
-        name: userId
-        required: true
-        type: string
-      - description: taskID
-        in: path
-        name: taskId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ""
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-      summary: Delete user's a task by taskId
-      tags:
-      - Tasks
     get:
       consumes:
       - application/json
@@ -346,6 +315,42 @@ paths:
       tags:
       - Tasks
   /v1/users/{userId}/tasks/{taskId}:
+    delete:
+      consumes:
+      - application/json
+      description: DeleteTask
+      operationId: Delete
+      parameters:
+      - description: userId
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: taskID
+        in: path
+        name: taskId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/custom.ErrorResponse'
+      summary: Delete user's a task by taskId
+      tags:
+      - Tasks
     get:
       consumes:
       - application/json
