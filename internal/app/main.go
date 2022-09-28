@@ -42,6 +42,3 @@ func Run(ctx context.Context, cancel context.CancelFunc) {
 
 	wg.Wait()
 }
-
-
-
