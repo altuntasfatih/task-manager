@@ -1,15 +1,8 @@
 package models
 
-type GetUsersResponse struct {
-	Users []*User
+type GetRepairsResponse struct {
+	Repairs []*Repair
 }
-type GetUserResponse struct {
-	*User
-}
-
-type GetTasksResponse struct {
-	Tasks []*Task
-}
-type GetTaskResponse struct {
-	*Task
+type GetRepairResponse struct {
+	*Repair
 }

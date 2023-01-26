@@ -1,21 +1,21 @@
 package storage
 
 import (
-	"github.com/altuntasfatih/task-manager/pkg/models"
+	"github.com/altuntasfatih/car-service-backend/pkg/models"
 )
 
 type Reader interface {
-	GetUser(id string) (*models.User, error)
-	GetAllUsers() ([]*models.User, error)
+	GetRepair(id string) (*models.Repair, error)
+	GetAllRepairs() ([]*models.Repair, error)
 }
 
 type Writer interface {
-	CreateUser(id string, user *models.User) error
-	UpdateUser(id string, user *models.User) error
+	CreateRepair(id string, user *models.Repair) error
+	UpdateRepair(id string, user *models.Repair) error
 }
 
 type Remover interface {
-	DeleteUser(id string) error
+	DeleteRepair(id string) error
 }
 
 type ReaderWriter interface {

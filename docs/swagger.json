@@ -4,15 +4,15 @@
     ],
     "swagger": "2.0",
     "info": {
-        "title": "Task Manager",
+        "title": "Car Service",
         "contact": {},
         "version": "1.0"
     },
     "basePath": "/",
     "paths": {
-        "/v1/users": {
+        "/v1/repairs": {
             "get": {
-                "description": "GetUsers",
+                "description": "GetRepairs",
                 "consumes": [
                     "application/json"
                 ],
@@ -20,15 +20,15 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Repairs"
                 ],
-                "summary": "Get All Users",
-                "operationId": "GetUsers",
+                "summary": "Get All Repairs",
+                "operationId": "GetRepairs",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetUsersResponse"
+                            "$ref": "#/definitions/models.GetRepairsResponse"
                         }
                     },
                     "400": {
@@ -52,7 +52,7 @@
                 }
             },
             "post": {
-                "description": "CreateUser",
+                "description": "CreateRepair",
                 "consumes": [
                     "application/json"
                 ],
@@ -60,10 +60,10 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Repairs"
                 ],
-                "summary": "Create User",
-                "operationId": "UserCreate",
+                "summary": "Create Repair",
+                "operationId": "RepairCreate",
                 "parameters": [
                     {
                         "description": "Request",
@@ -71,7 +71,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.CreateUserRequest"
+                            "$ref": "#/definitions/models.CreateRepairRequest"
                         }
                     }
                 ],
@@ -79,7 +79,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetUserResponse"
+                            "$ref": "#/definitions/models.GetRepairResponse"
                         }
                     },
                     "400": {
@@ -103,9 +103,9 @@
                 }
             }
         },
-        "/v1/users/{userId}": {
+        "/v1/repairs/{repairId}": {
             "get": {
-                "description": "GetUser",
+                "description": "GetRepair",
                 "consumes": [
                     "application/json"
                 ],
@@ -113,15 +113,15 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Repairs"
                 ],
-                "summary": "Get User by userId",
-                "operationId": "GetUser",
+                "summary": "Get Repair by repairId",
+                "operationId": "GetRepair",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "userId",
-                        "name": "userId",
+                        "description": "repairId",
+                        "name": "repairId",
                         "in": "path",
                         "required": true
                     }
@@ -130,7 +130,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetUserResponse"
+                            "$ref": "#/definitions/models.GetRepairResponse"
                         }
                     },
                     "400": {
@@ -154,7 +154,7 @@
                 }
             },
             "delete": {
-                "description": "DeleteUser",
+                "description": "DeleteRepair",
                 "consumes": [
                     "application/json"
                 ],
@@ -162,302 +162,22 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Repairs"
                 ],
-                "summary": "Delete user by userId",
-                "operationId": "DeleteUser",
+                "summary": "Delete repair by repairId",
+                "operationId": "DeleteRepair",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "userId",
-                        "name": "userId",
+                        "description": "repairId",
+                        "name": "repairId",
                         "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/users/{userId}/reminder": {
-            "put": {
-                "description": "SetReminder",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Set reminder method of a user",
-                "operationId": "SetReminder",
-                "parameters": [
-                    {
-                        "description": "Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.SetReminderRequest"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "userId",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetUserResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/users/{userId}/tasks": {
-            "get": {
-                "description": "GetTasks",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Tasks"
-                ],
-                "summary": "Get user's all task",
-                "operationId": "GetTasks",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "userId",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetTasksResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "CreateTask",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Tasks"
-                ],
-                "summary": "Create a task for user",
-                "operationId": "CreateTask",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "userId",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateTaskRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetTaskResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/users/{userId}/tasks/{taskId}": {
-            "get": {
-                "description": "GetTask",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Tasks"
-                ],
-                "summary": "Get user's a task by taskId",
-                "operationId": "GetTask",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "userId",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "taskID",
-                        "name": "taskId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetTaskResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/custom.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "DeleteTask",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Tasks"
-                ],
-                "summary": "Delete user's a task by taskId",
-                "operationId": "Delete",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "userId",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "taskID",
-                        "name": "taskId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
+                        "description": "OK"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -490,34 +210,7 @@
                 }
             }
         },
-        "models.CreateTaskRequest": {
-            "type": "object",
-            "required": [
-                "endTime",
-                "name",
-                "periodType",
-                "reminderPeriod",
-                "startTime"
-            ],
-            "properties": {
-                "endTime": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "periodType": {
-                    "type": "string"
-                },
-                "reminderPeriod": {
-                    "type": "integer"
-                },
-                "startTime": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.CreateUserRequest": {
+        "models.CreateRepairRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -536,39 +229,7 @@
                 }
             }
         },
-        "models.GetTaskResponse": {
-            "type": "object",
-            "properties": {
-                "endTime": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "reminderPeriod": {
-                    "description": "in nanosecond",
-                    "type": "integer"
-                },
-                "startTime": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.GetTasksResponse": {
-            "type": "object",
-            "properties": {
-                "tasks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Task"
-                    }
-                }
-            }
-        },
-        "models.GetUserResponse": {
+        "models.GetRepairResponse": {
             "type": "object",
             "properties": {
                 "email": {
@@ -582,62 +243,21 @@
                 },
                 "lastName": {
                     "type": "string"
-                },
-                "reminderMethod": {
-                    "type": "string"
-                },
-                "tasks": {
+                }
+            }
+        },
+        "models.GetRepairsResponse": {
+            "type": "object",
+            "properties": {
+                "repairs": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Task"
+                        "$ref": "#/definitions/models.Repair"
                     }
                 }
             }
         },
-        "models.GetUsersResponse": {
-            "type": "object",
-            "properties": {
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.User"
-                    }
-                }
-            }
-        },
-        "models.SetReminderRequest": {
-            "type": "object",
-            "required": [
-                "method"
-            ],
-            "properties": {
-                "method": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.Task": {
-            "type": "object",
-            "properties": {
-                "endTime": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "reminderPeriod": {
-                    "description": "in nanosecond",
-                    "type": "integer"
-                },
-                "startTime": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.User": {
+        "models.Repair": {
             "type": "object",
             "properties": {
                 "email": {
@@ -651,15 +271,6 @@
                 },
                 "lastName": {
                     "type": "string"
-                },
-                "reminderMethod": {
-                    "type": "string"
-                },
-                "tasks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Task"
-                    }
                 }
             }
         }

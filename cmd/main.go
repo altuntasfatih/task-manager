@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	_ "github.com/altuntasfatih/task-manager/docs"
-	"github.com/altuntasfatih/task-manager/internal/app"
+
+	_ "github.com/altuntasfatih/car-service-backend/docs"
+	"github.com/altuntasfatih/car-service-backend/internal/app"
 )
 
-// @title Task Manager
+// @title Car Service
 // @version 1.0
 // @Schemes  http
 // @BasePath /

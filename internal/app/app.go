@@ -2,21 +2,20 @@ package app
 
 import (
 	"context"
-	"github.com/altuntasfatih/task-manager/internal/user/handler"
-	"github.com/altuntasfatih/task-manager/internal/user/service"
-	"github.com/altuntasfatih/task-manager/pkg/storage/badger_storage"
-	fiberSwagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/swagger"
 	"log"
 	"sync"
+
+	"github.com/altuntasfatih/car-service-backend/internal/repair/handler"
+	"github.com/altuntasfatih/car-service-backend/internal/repair/service"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
 type App struct {
-	router      *fiber.App
-	userService service.UserService
-	taskService service.TaskService
+	router        *fiber.App
+	repairService service.RepairService
 }
 
 type initializerFunc func() error
@@ -43,50 +42,36 @@ func (a *App) initRouter() error {
 	router.Use(logger.New())
 
 	router.Get("/_monitoring/health", handler.HealthCheck())
-	router.Get("/swagger/*", fiberSwagger.Handler)
+	router.Get("/swagger/*", swagger.HandlerDefault) // default
+
 	router.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.Redirect("/swagger/index.html", fiber.StatusMovedPermanently)
 	})
 
 	{
-		userPrefix := "/v1/users"
+		userPrefix := "/v1/repairs"
 		users := router.Group(userPrefix)
-		users.Post("", handler.CreateUser(a.userService))
-		users.Get("", handler.GetUsers(a.userService))
-		users.Get("/:userId", handler.GetUser(a.userService))
-		users.Delete("/:userId", handler.DeleteUser(a.userService))
-		users.Put("/:userId/reminder", handler.SetReminder(a.userService))
-	}
-
-	{
-		tasksPrefix := "/v1/users/:userId/tasks"
-		tasks := router.Group(tasksPrefix)
-		tasks.Post("", handler.CreateTask(a.taskService))
-		tasks.Get("", handler.GetTasks(a.taskService))
-		tasks.Get("/:taskId", handler.GetTask(a.taskService))
-		tasks.Delete("/:taskId", handler.DeleteTask(a.taskService))
+		users.Post("", handler.CreateRepair(a.repairService))
+		users.Get("", handler.GetRepairs(a.repairService))
+		users.Get("/:repairId", handler.GetRepair(a.repairService))
+		users.Delete("/:repairId", handler.DeleteRepair(a.repairService))
 	}
 
 	return nil
 }
 
 func (a *App) initService() error {
-	userStore, err := badger_storage.NewClient(false)
+	// userStore, err := badger_storage.NewClient(false)
+	// if err != nil {
+	// 	return err
+	// }
+
+	repairService, err := service.NewRepairService(nil)
 	if err != nil {
 		return err
 	}
 
-	userService, err := service.NewUserService(userStore)
-	if err != nil {
-		return err
-	}
-	taskService, err := service.NewTaskService(userStore)
-	if err != nil {
-		return err
-	}
-
-	a.userService = userService
-	a.taskService = taskService
+	a.repairService = repairService
 	return nil
 
 }

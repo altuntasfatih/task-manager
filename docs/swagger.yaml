@@ -5,26 +5,7 @@ definitions:
       message:
         type: string
     type: object
-  models.CreateTaskRequest:
-    properties:
-      endTime:
-        type: string
-      name:
-        type: string
-      periodType:
-        type: string
-      reminderPeriod:
-        type: integer
-      startTime:
-        type: string
-    required:
-    - endTime
-    - name
-    - periodType
-    - reminderPeriod
-    - startTime
-    type: object
-  models.CreateUserRequest:
+  models.CreateRepairRequest:
     properties:
       email:
         type: string
@@ -37,28 +18,7 @@ definitions:
     - firstName
     - lastName
     type: object
-  models.GetTaskResponse:
-    properties:
-      endTime:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      reminderPeriod:
-        description: in nanosecond
-        type: integer
-      startTime:
-        type: string
-    type: object
-  models.GetTasksResponse:
-    properties:
-      tasks:
-        items:
-          $ref: '#/definitions/models.Task'
-        type: array
-    type: object
-  models.GetUserResponse:
+  models.GetRepairResponse:
     properties:
       email:
         type: string
@@ -68,42 +28,15 @@ definitions:
         type: string
       lastName:
         type: string
-      reminderMethod:
-        type: string
-      tasks:
+    type: object
+  models.GetRepairsResponse:
+    properties:
+      repairs:
         items:
-          $ref: '#/definitions/models.Task'
+          $ref: '#/definitions/models.Repair'
         type: array
     type: object
-  models.GetUsersResponse:
-    properties:
-      users:
-        items:
-          $ref: '#/definitions/models.User'
-        type: array
-    type: object
-  models.SetReminderRequest:
-    properties:
-      method:
-        type: string
-    required:
-    - method
-    type: object
-  models.Task:
-    properties:
-      endTime:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      reminderPeriod:
-        description: in nanosecond
-        type: integer
-      startTime:
-        type: string
-    type: object
-  models.User:
+  models.Repair:
     properties:
       email:
         type: string
@@ -113,31 +46,25 @@ definitions:
         type: string
       lastName:
         type: string
-      reminderMethod:
-        type: string
-      tasks:
-        items:
-          $ref: '#/definitions/models.Task'
-        type: array
     type: object
 info:
   contact: {}
-  title: Task Manager
+  title: Car Service
   version: "1.0"
 paths:
-  /v1/users:
+  /v1/repairs:
     get:
       consumes:
       - application/json
-      description: GetUsers
-      operationId: GetUsers
+      description: GetRepairs
+      operationId: GetRepairs
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.GetUsersResponse'
+            $ref: '#/definitions/models.GetRepairsResponse'
         "400":
           description: Bad Request
           schema:
@@ -150,28 +77,28 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/custom.ErrorResponse'
-      summary: Get All Users
+      summary: Get All Repairs
       tags:
-      - Users
+      - Repairs
     post:
       consumes:
       - application/json
-      description: CreateUser
-      operationId: UserCreate
+      description: CreateRepair
+      operationId: RepairCreate
       parameters:
       - description: Request
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/models.CreateUserRequest'
+          $ref: '#/definitions/models.CreateRepairRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.GetUserResponse'
+            $ref: '#/definitions/models.GetRepairResponse'
         "400":
           description: Bad Request
           schema:
@@ -184,26 +111,26 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/custom.ErrorResponse'
-      summary: Create User
+      summary: Create Repair
       tags:
-      - Users
-  /v1/users/{userId}:
+      - Repairs
+  /v1/repairs/{repairId}:
     delete:
       consumes:
       - application/json
-      description: DeleteUser
-      operationId: DeleteUser
+      description: DeleteRepair
+      operationId: DeleteRepair
       parameters:
-      - description: userId
+      - description: repairId
         in: path
-        name: userId
+        name: repairId
         required: true
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: ""
+          description: OK
         "400":
           description: Bad Request
           schema:
@@ -216,18 +143,18 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/custom.ErrorResponse'
-      summary: Delete user by userId
+      summary: Delete repair by repairId
       tags:
-      - Users
+      - Repairs
     get:
       consumes:
       - application/json
-      description: GetUser
-      operationId: GetUser
+      description: GetRepair
+      operationId: GetRepair
       parameters:
-      - description: userId
+      - description: repairId
         in: path
-        name: userId
+        name: repairId
         required: true
         type: string
       produces:
@@ -236,7 +163,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.GetUserResponse'
+            $ref: '#/definitions/models.GetRepairResponse'
         "400":
           description: Bad Request
           schema:
@@ -249,197 +176,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/custom.ErrorResponse'
-      summary: Get User by userId
+      summary: Get Repair by repairId
       tags:
-      - Users
-  /v1/users/{userId}/reminder:
-    put:
-      consumes:
-      - application/json
-      description: SetReminder
-      operationId: SetReminder
-      parameters:
-      - description: Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.SetReminderRequest'
-      - description: userId
-        in: path
-        name: userId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetUserResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-      summary: Set reminder method of a user
-      tags:
-      - Users
-  /v1/users/{userId}/tasks:
-    get:
-      consumes:
-      - application/json
-      description: GetTasks
-      operationId: GetTasks
-      parameters:
-      - description: userId
-        in: path
-        name: userId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetTasksResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-      summary: Get user's all task
-      tags:
-      - Tasks
-    post:
-      consumes:
-      - application/json
-      description: CreateTask
-      operationId: CreateTask
-      parameters:
-      - description: userId
-        in: path
-        name: userId
-        required: true
-        type: string
-      - description: Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateTaskRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetTaskResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-      summary: Create a task for user
-      tags:
-      - Tasks
-  /v1/users/{userId}/tasks/{taskId}:
-    delete:
-      consumes:
-      - application/json
-      description: DeleteTask
-      operationId: Delete
-      parameters:
-      - description: userId
-        in: path
-        name: userId
-        required: true
-        type: string
-      - description: taskID
-        in: path
-        name: taskId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ""
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-      summary: Delete user's a task by taskId
-      tags:
-      - Tasks
-    get:
-      consumes:
-      - application/json
-      description: GetTask
-      operationId: GetTask
-      parameters:
-      - description: userId
-        in: path
-        name: userId
-        required: true
-        type: string
-      - description: taskID
-        in: path
-        name: taskId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.GetTaskResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/custom.ErrorResponse'
-      summary: Get user's a task by taskId
-      tags:
-      - Tasks
+      - Repairs
 schemes:
 - http
 swagger: "2.0"
